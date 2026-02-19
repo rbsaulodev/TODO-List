@@ -5,7 +5,6 @@ import model.enums.StatusTask;
 import service.CategoryManager;
 import service.TodoManager;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -18,9 +17,10 @@ public class MenuHandler {
         System.out.println("\n--- GERENCIAR TAREFAS ---");
         System.out.println("1. Criar Nova Tarefa");
         System.out.println("2. Listar Todas");
-        System.out.println("3. Atualizar Tarefa (Status/Alarme/Dados)");
-        System.out.println("4. Remover Tarefa");
-        System.out.println("5. Verificar Alarmes Ativos");
+        System.out.println("3. Listar por Status (TODO/DOING/DONE)");
+        System.out.println("4. Atualizar Tarefa (Status/Alarme/Dados)");
+        System.out.println("5. Remover Tarefa");
+        System.out.println("6. Verificar Alarmes Ativos");
         System.out.print("Escolha: ");
 
         try {
@@ -69,6 +69,17 @@ public class MenuHandler {
                     break;
 
                 case 3:
+                    System.out.println("\n--- FILTRAR POR STATUS ---");
+                    System.out.println("1. TODO (A fazer)");
+                    System.out.println("2. DOING (Em andamento)");
+                    System.out.println("3. DONE (Concluído)");
+                    System.out.print("Escolha o status: ");
+                    int statusChoice = Integer.parseInt(scanner.nextLine());
+
+                    taskManager.listTaskByNumber(statusChoice);
+                    break;
+
+                case 4:
                     System.out.println("\n--- ATUALIZAR TAREFA ---");
                     taskManager.listAllTasks();
                     System.out.print("Digite o ID da tarefa que deseja alterar: ");
@@ -104,7 +115,7 @@ public class MenuHandler {
                     taskManager.updateTask(id, nameUp, null, dateUp, null, statusUp, alarmUp, hoursUp);
                     break;
 
-                case 4:
+                case 5:
                     System.out.println("\n--- REMOVER TAREFA ---");
                     taskManager.listAllTasks();
                     System.out.print("Digite o ID para remover: ");
@@ -112,7 +123,7 @@ public class MenuHandler {
                     taskManager.removeTask(idRem);
                     break;
 
-                case 5:
+                case 6:
                     taskManager.checkAlarms();
                     break;
 
@@ -130,8 +141,9 @@ public class MenuHandler {
         System.out.println("\n--- MENU DE CATEGORIAS ---");
         System.out.println("1. Criar Categoria");
         System.out.println("2. Listar Todas");
-        System.out.println("3. Atualizar Categoria");
-        System.out.println("4. Remover Categoria");
+        System.out.println("3. Buscar Categoria por Nome");
+        System.out.println("4. Atualizar Categoria");
+        System.out.println("5. Remover Categoria");
         System.out.println("0. Voltar");
         System.out.print("Escolha: ");
 
@@ -154,6 +166,18 @@ public class MenuHandler {
                     break;
 
                 case 3:
+                    System.out.println("\n--- BUSCAR POR NOME ---");
+                    System.out.print("Digite o nome da categoria: ");
+                    String searchName = scanner.nextLine();
+                    var cat = categoryManager.findByName(searchName);
+                    if (cat != null) {
+                        System.out.println("Categoria encontrada: " + cat);
+                    } else {
+                        System.out.println("Categoria não encontrada.");
+                    }
+                    break;
+
+                case 4:
                     System.out.println("\n--- ATUALIZAR CATEGORIA ---");
                     categoryManager.listAllCategories();
                     System.out.print("ID da categoria que deseja editar: ");
@@ -167,7 +191,7 @@ public class MenuHandler {
                     categoryManager.updateCategory(idEdit, novoNome, novaDesc);
                     break;
 
-                case 4:
+                case 5:
                     System.out.println("\n--- REMOVER CATEGORIA ---");
                     categoryManager.listAllCategories();
                     System.out.print("ID da categoria para remover: ");

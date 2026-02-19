@@ -8,15 +8,14 @@ import java.util.List;
 
 public class CategoryManager {
     private List<CategoryTask> categories = new ArrayList<>();
+    private final String path = "src/data/categories.csv";
 
     private void addCategory(CategoryTask category) {
         categories.add(category);
     }
 
-    // Sistema de Memória
     public void saveCategoriesCSV() {
-        String filename = "src/data/categories.csv";
-        try (PrintWriter pw = new PrintWriter(new FileWriter(filename))) {
+        try (PrintWriter pw = new PrintWriter(new FileWriter(path))) {
             pw.println("id,name,description");
             for (CategoryTask c : categories) {
                 pw.println(c.getId() + "," + c.getName() + "," + c.getDescription());
@@ -27,7 +26,6 @@ public class CategoryManager {
     }
 
     public void loadCategoriesCSV() {
-        String path = "src/data/categories.csv";
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line;
             br.readLine();

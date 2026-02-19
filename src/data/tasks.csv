@@ -1,1 +1,2 @@
-id,name,description,dateToEnd,priority,category,status
+id,name,description,dateToEnd,priority,category,status,alarmEnabled,alarmHoursPrior
+1,Adicionar alarme,alarme,2005-12-06T14:00,3,1,TODO,true,2

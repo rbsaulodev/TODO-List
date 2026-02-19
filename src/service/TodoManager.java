@@ -15,6 +15,7 @@ import java.util.List;
 
 public class TodoManager {
     private List<Task> tasks = new ArrayList<>();
+    private final String path = "src/data/tasks.csv";
 
     private void addTask(Task task) {
         tasks.add(task);
@@ -37,8 +38,7 @@ public class TodoManager {
 
     // Sistema de Memória
     private void saveAllDataCSV() {
-        String filename = "src/data/tasks.csv";
-        try (PrintWriter pw = new PrintWriter(new FileWriter(filename))) {
+        try (PrintWriter pw = new PrintWriter(new FileWriter(path))) {
             pw.println("id,name,description,dateToEnd,priority,category,status,alarmEnabled,alarmHoursPrior");
             for (Task t : tasks) {
                 pw.println(t.toCSV());
@@ -49,7 +49,6 @@ public class TodoManager {
     }
 
     public void loadTasksCSV(CategoryManager catManager) {
-        String path = "src/data/tasks.csv";
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line;
             br.readLine();
@@ -111,24 +110,6 @@ public class TodoManager {
     public void listAllTasks() {
         if (tasks.isEmpty()) System.out.println("Lista vazia.");
         else tasks.forEach(System.out::println);
-    }
-
-    public void listDoneTasks() {
-        tasks.stream()
-                .filter(t -> t.getStatus() == StatusTask.DONE)
-                .forEach(System.out::println);
-    }
-
-    public void listToDoTaks(){
-        tasks.stream()
-                .filter(t -> t.getStatus() == StatusTask.TODO)
-                .forEach(System.out::println);
-    }
-
-    public void listDoingTaks(){
-        tasks.stream()
-                .filter(t -> t.getStatus() == StatusTask.DOING)
-                .forEach(System.out::println);
     }
 
     public void listTaskByNumber(Integer number){
