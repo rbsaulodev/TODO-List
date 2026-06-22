@@ -1,51 +1,54 @@
 package main;
 
-import service.CategoryManager;
-import service.TodoManager;
+import main.controller.CategoryController;
+import main.controller.TaskController;
+import main.observer.AlarmObserver;
+import main.repository.CategoryRepository;
+import main.repository.TaskRepository;
+import main.service.CategoryService;
+import main.service.TodoService;
+import main.view.MenuHandler;
+
 import java.util.Scanner;
 
 public class Main {
+
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        TodoManager taskManager = new TodoManager();
-        CategoryManager categoryManager = new CategoryManager();
 
-        System.out.println("Carregando dados salvos...");
-        System.out.println(" ");
-        categoryManager.loadCategoriesCSV();
-        taskManager.loadTasksCSV(categoryManager);
+        CategoryRepository catRepo = new CategoryRepository();
+        TaskRepository taskRepo = new TaskRepository(catRepo);
 
-        int opcao = -1;
+        CategoryService catService  = new CategoryService(catRepo);
+        TodoService todoService = new TodoService(taskRepo);
 
-        System.out.println("======= ZG-HERO TODO LIST =======");
-        System.out.println("Bem-vindo, Brilhante!");
+        todoService.addObserver(new AlarmObserver());
 
-        while (opcao != 0) {
-            System.out.println("\n--- MENU PRINCIPAL ---");
-            System.out.println("1. Gerenciar Tarefas");
-            System.out.println("2. Gerenciar Categorias");
-            System.out.println("0. Sair");
-            System.out.print("Escolha uma opção: ");
+        CategoryController catCtrl = new CategoryController(catService);
+        TaskController taskCtrl = new TaskController(todoService, catService);
 
-            try {
-                opcao = Integer.parseInt(scanner.nextLine());
-                switch (opcao) {
-                    case 1:
-                        MenuHandler.exibirMenuTarefas(scanner, taskManager, categoryManager);
-                        break;
-                    case 2:
-                        MenuHandler.exibirMenuCategorias(scanner, categoryManager);
-                        break;
-                    case 0:
-                        System.out.println("Saindo... Até logo!");
-                        break;
-                    default:
-                        System.out.println("Opção inválida!");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Por favor, digite apenas números.");
+        catService.load();
+        todoService.load(catService);
+
+        Scanner sc = new Scanner(System.in);
+        int opcao;
+        do {
+            System.out.println("""
+                \n╔══════════════════════════════╗
+                ║      TODO LIST — ACZG        ║
+                ╠══════════════════════════════╣
+                ║ 1. Gerenciar Tarefas         ║
+                ║ 2. Gerenciar Categorias      ║
+                ║ 0. Sair                      ║
+                ╚══════════════════════════════╝
+                Opção:\s""");
+            opcao = Integer.parseInt(sc.nextLine().trim());
+            switch (opcao) {
+                case 1 -> MenuHandler.exibirMenuTarefas(sc, taskCtrl, catCtrl);
+                case 2 -> MenuHandler.exibirMenuCategorias(sc, catCtrl);
             }
-        }
-        scanner.close();
+        } while (opcao != 0);
+
+        System.out.println("Até logo! 👋");
+        sc.close();
     }
 }
